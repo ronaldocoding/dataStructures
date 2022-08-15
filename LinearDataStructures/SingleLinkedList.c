@@ -156,20 +156,22 @@ int removeByValue(Node **list, int searchValue) {
 }
 
 int getNodeValueByIndex(Node **list, int index) {
+    if(index < 0) return NULL;
+
     Node *currentNode = *list;
     int aux = 0;
 
-    while(aux != index) {
+    while(aux != index && currentNode != NULL) {
         if(currentNode == NULL) return -1;
         currentNode = currentNode->next;
         aux++;
     }
-
+    if(currentNode == NULL) return NULL;
     return currentNode->value;
 }
 
 int getNodeIndexByValue(Node **list, int searchValue) {
-    if(isListEmpty(list)) return 0;
+    if(isListEmpty(list)) return -1;
 
     Node *currentNode = *list;
     int index = 0;
@@ -182,7 +184,7 @@ int getNodeIndexByValue(Node **list, int searchValue) {
         index++;
     }
 
-    return -1;
+    return -2;
 }
 
 int getListSize(Node **list) {
