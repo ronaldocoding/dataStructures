@@ -23,18 +23,6 @@ void printListRecursively(Node **list);
 void printListBackwards(Node **list);
 
 int main() {
-
-    Node *list = NULL;
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    insertEnd(&list, 10);
-    printList(&list);
-    removeMiddle(&list, 100);
-    printList(&list);
     // TODO
 }
 
@@ -127,14 +115,19 @@ void removeMiddle(Node **list, int index) {
 
 void removeEnd(Node **list) {
     if(!isListEmpty(list)) {
-        Node *previousNode, *currentNode; 
-        currentNode = previousNode = *list;
-        while(currentNode->next != NULL) {
-            previousNode = currentNode;
-            currentNode = currentNode->next;
+        if((*list)->next == NULL) {
+            removeStart(list);
         }
-        previousNode->next = NULL;
-        free(currentNode);
+        else {
+            Node *previousNode, *currentNode; 
+            currentNode = *list;
+            while(currentNode->next != NULL) {
+                previousNode = currentNode;
+                currentNode = currentNode->next;
+            }
+            previousNode->next = NULL;
+            free(currentNode);
+        }
     }
 }
 
