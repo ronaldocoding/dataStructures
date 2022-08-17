@@ -7,7 +7,7 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-Node* createNode(int newValue);
+Node * createNode(int newValue);
 int isListEmpty(Node **list);
 void insertStart(Node **list, int newValue);
 void insertMiddle(Node **list, int newValue, int index);
@@ -22,15 +22,14 @@ int getListSize(Node **list);
 void printList(Node **list);
 void printListRecursively(Node **list);
 void printListBackwards(Node **list);
-Node* josephus(Node **list, int index); // Not done yet
+Node * josephus(Node **list, int index); // Not done yet
 
 int main() {
     // TODO
-    return 0;
 }
 
-Node* createNode(int  newValue) {
-    Node *newNode = (Node*) malloc(sizeof(Node));
+Node * createNode(int  newValue) {
+    Node *newNode = (Node *) malloc(sizeof(Node));
     newNode->value = newValue;
     newNode->previous = NULL;
     newNode->next = NULL;

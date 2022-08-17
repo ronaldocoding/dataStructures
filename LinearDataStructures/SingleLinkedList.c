@@ -6,7 +6,7 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-Node* createNode(int newValue);
+Node * createNode(int newValue);
 int isListEmpty(Node **list);
 void insertStart(Node **list, int newValue);
 void insertMiddle(Node **list, int newValue, int index);
@@ -26,8 +26,8 @@ int main() {
     // TODO
 }
 
-Node* createNode(int newValue) {
-    Node *newNode = (Node*) malloc(sizeof(Node));
+Node * createNode(int newValue) {
+    Node *newNode = (Node *) malloc(sizeof(Node));
     newNode->value = newValue;
     newNode->next = NULL;
     return newNode;
