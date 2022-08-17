@@ -239,3 +239,48 @@ void printListBackwards(Node **list) {
     else printf("%d ", currentNode->value);
     return; 
 } 
+
+Node * josephus(Node **list, int pos) {
+    if(*list == NULL || pos < 0) return NULL;
+
+    Node *firstNode, *previousNode, *currentNode;
+    firstNode = previousNode = currentNode = *list;
+
+    while(firstNode->next != NULL) {
+       
+        int aux = 0;
+        while(aux != pos) {
+            if(currentNode->next == NULL) {
+                previousNode = currentNode;
+                currentNode = firstNode;
+            }
+            else {
+                previousNode = currentNode;
+                currentNode = currentNode->next;
+            }
+            aux++;
+        }
+    
+        Node * nodeToBeRemoved = currentNode;
+
+        if(nodeToBeRemoved == firstNode) { 
+            firstNode->next->previous = NULL;
+            firstNode = firstNode->next;
+            currentNode = firstNode;
+        }
+        else if(nodeToBeRemoved->next == NULL) {
+            previousNode->next = NULL;
+            currentNode = previousNode;
+        }
+        else {
+            previousNode->next = nodeToBeRemoved->next;
+            nodeToBeRemoved->next->previous = previousNode;
+            currentNode = previousNode;
+        }
+
+        pos = nodeToBeRemoved->value;
+        free(nodeToBeRemoved);
+    }
+
+    return firstNode;
+}
