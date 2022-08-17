@@ -9,6 +9,7 @@ typedef struct Node {
 int isStackEmpty(Node **stack);
 Node * createNode(int newValue);
 void push(Node **stack, int newValue);
+void pushNewHead(Node **stack, Node *newHead);
 Node * pushReturnNewHead(Node **stack, int newValue);
 int pushReturnNewHeadValue(Node **stack, int newValue);
 void pop(Node **stack);
@@ -33,6 +34,27 @@ Node * createNode(int newValue) {
 }
 
 void push(Node **stack, int newValue) {
+    Node * newHead = createNode(newValue);
+    if(isStackEmpty(stack)) {
+        *stack = newHead;
+    }
+    else {
+        newHead->next = *stack;
+        *stack = newHead;
+    }
+}
+
+void pushNewHead(Node **stack, Node *newHead) {
+    if(isStackEmpty(stack)) {
+        *stack = newHead;
+    }
+    else {
+        newHead->next = *stack;
+        *stack = newHead;
+    }
+}
+
+void pushNewValue(Node **stack, int newValue) {
     Node * newHead = createNode(newValue);
     if(isStackEmpty(stack)) {
         *stack = newHead;
@@ -82,6 +104,7 @@ Node * popReturnOldHead(Node **stack) {
     else {
         Node * oldHead = *stack;
         *stack = (*stack)->next;
+        oldHead->next = NULL;
         return oldHead;
     }
 }
