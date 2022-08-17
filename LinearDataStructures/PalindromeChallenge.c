@@ -50,6 +50,17 @@ void enqueueNewHead(Node **head, Node **tail, Node *newHead) {
     }
 }
 
+void enqueueNewHeadValue(Node **head, Node **tail, char newLetter) {
+	Node *newHead = createNode(newLetter);
+	
+	if(isStructureEmpty(head)) {
+        *tail = *head = newHead;
+    } else {
+        (*tail)->next = newHead;
+        *tail = newHead;
+    }
+}
+ 
 Node * dequeueReturnOldHead(Node **head) {
     Node *oldHead = *head;
     if(!isStructureEmpty(head)) {
@@ -70,8 +81,9 @@ void push(Node **stack, int newValue) {
     }
 }
 
-void pushNewHead(Node **stack, Node *newHead) {
-    if(isStructureEmpty(stack)) {
+void pushNewHeadValue(Node **stack, char newLetter) {
+	Node *newHead = createNode(newLetter);
+	if(isStructureEmpty(stack)) {
         *stack = newHead;
     }
     else {
@@ -140,16 +152,11 @@ void printList(Node **list) {
 int isPalindrome(Node **list) {
     Node *stackHead = NULL, *queueHead = NULL, *queueTail = NULL, *currentNode = *list;
 
-    while(list != NULL) {
+    while(currentNode != NULL) {
         pushNewHeadValue(&stackHead, currentNode->letter);
         enqueueNewHeadValue(&queueHead, &queueTail, currentNode->letter);
         currentNode = currentNode->next;
-        //printf("ih\n");
     }
-
-    printList(list);
-    printStack(&stackHead);
-    printQueue(&queueHead, &queueTail);
 
     while(stackHead != NULL && queueHead != NULL) {
         Node *stackOldHead = popReturnOldHead(&stackHead);
@@ -166,18 +173,28 @@ int isPalindrome(Node **list) {
 
 int main() {
     Node *word1 = NULL;
+    insertEnd(&word1, 'n');
     insertEnd(&word1, 'a');
-    insertEnd(&word1, 'b');
+    insertEnd(&word1, 't');
     insertEnd(&word1, 'a');
+    insertEnd(&word1, 'n');
 
     printList(&word1);
 
     Node *word2 = NULL;
-    insertEnd(&word2, 'a');
-    insertEnd(&word2, 'b');
-    insertEnd(&word2, 'b');
+    insertEnd(&word2, 'o');
+    insertEnd(&word2, 'm');
+    insertEnd(&word2, 'i');
+    insertEnd(&word2, 's');
+    insertEnd(&word2, 's');
+    insertEnd(&word2, 'i');
+    insertEnd(&word2, 's');
+    insertEnd(&word2, 's');
+    insertEnd(&word2, 'i');
+    insertEnd(&word2, 'm');
+    insertEnd(&word2, 'o');
 
-    printList(&word1);
+    printList(&word2);
 
     if(isPalindrome(&word1)) printf("Word 1 is palindrome\n");
     else printf("Word 1 is not palindrome\n");
