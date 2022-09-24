@@ -11,6 +11,7 @@ typedef struct Node {
 } Node;
 
 Node *createNode(int newKey);
+Node *binarySearch(Node **root, int searchedKey);
 bool isTreeEmpty(Node *root);
 bool insertNode(Node **root, Node *newNode);
 void printInOrder(Node *root);
@@ -40,6 +41,9 @@ int main() {
     printf("\n");
     printInOrder(bst);
     printf("\n");
+    Node *searchedNode = binarySearch(&bst, 71);
+    printPreOrder(searchedNode);
+    printf("\n");
     return 0;
 }
 
@@ -49,6 +53,22 @@ Node *createNode(int newKey) {
     newNode->left = NULL;
     newNode->right = NULL;
     return newNode;
+}
+
+Node *binarySearch(Node **root, int searchedKey) {
+    if(isTreeEmpty(*root)) {
+        return NULL;
+    } else {
+        if((*root)->key == searchedKey) {
+            return *root;
+        } else {
+            if(searchedKey > (*root)->key) {
+                return binarySearch(&(*root)->right, searchedKey);
+            } else {
+                return binarySearch(&(*root)->left, searchedKey);
+            }
+        }
+    }
 }
 
 bool isTreeEmpty(Node *root) {
