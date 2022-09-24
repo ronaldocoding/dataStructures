@@ -11,12 +11,14 @@ typedef struct Node {
 } Node;
 
 Node *createNode(int newKey);
-Node *binarySearch(Node **root, int searchedKey);
+Node *binarySearch(Node *root, int searchedKey);
+Node *searchNode(Node *root, int searchedKey, Node **nodeParent);
 bool isTreeEmpty(Node *root);
 bool insertNode(Node **root, Node *newNode);
 void printInOrder(Node *root);
 void printPreOrder(Node *root);
 void printPosOrder(Node *root);
+void printPreOrderWithParentheses(Node *root);
 
 int main() {
     Node *bst = NULL;
@@ -41,8 +43,16 @@ int main() {
     printf("\n");
     printInOrder(bst);
     printf("\n");
-    Node *searchedNode = binarySearch(&bst, 71);
+    Node *searchedNode = binarySearch(bst, 71);
     printPreOrder(searchedNode);
+    printf("\n");
+    Node *nodeParent;
+    Node *newSearchedNode = searchNode(bst, 71, &nodeParent);
+    printPreOrder(newSearchedNode);
+    printf("\n");
+    printPreOrder(nodeParent);
+    printf("\n");
+    printPreOrderWithParentheses(bst);
     printf("\n");
     return 0;
 }
@@ -55,20 +65,42 @@ Node *createNode(int newKey) {
     return newNode;
 }
 
-Node *binarySearch(Node **root, int searchedKey) {
-    if(isTreeEmpty(*root)) {
+Node *binarySearch(Node *root, int searchedKey) {
+    if(isTreeEmpty(root)) {
         return NULL;
     } else {
-        if((*root)->key == searchedKey) {
-            return *root;
+        if(root->key == searchedKey) {
+            return root;
         } else {
-            if(searchedKey > (*root)->key) {
-                return binarySearch(&(*root)->right, searchedKey);
+            if(searchedKey > root->key) {
+                return binarySearch(root->right, searchedKey);
             } else {
-                return binarySearch(&(*root)->left, searchedKey);
+                return binarySearch(root->left, searchedKey);
             }
         }
     }
+}
+
+Node *searchNode(Node *root, int searchedKey, Node **nodeParent) {
+    *nodeParent = NULL;
+    if(isTreeEmpty(root)) {
+        return NULL;
+    } else {
+        Node *currentNode = root;
+        while(currentNode != NULL) {
+            if(currentNode->key == searchedKey) {
+                return currentNode;
+            } else {
+                *nodeParent = currentNode;
+                if(searchedKey > currentNode->key) {
+                    currentNode = currentNode->right;
+                } else {
+                    currentNode = currentNode->left;
+                }
+            }
+        }
+    }
+    return NULL;
 }
 
 bool isTreeEmpty(Node *root) {
@@ -117,4 +149,13 @@ void printPosOrder(Node *root) {
     printPosOrder(root->left);
     printPosOrder(root->right);
     printf("%d ", root->key);
+}
+
+void printPreOrderWithParentheses(Node *root) {
+    if(isTreeEmpty(root)) return;
+    printf("%d ", root->key);
+    printf(" (");
+    printPreOrderWithParentheses(root->left);
+    printPreOrderWithParentheses(root->right);
+    printf(") ");
 }
