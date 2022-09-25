@@ -15,13 +15,17 @@ Node *binarySearch(Node *root, int searchedKey);
 Node *searchNode(Node *root, int searchedKey, Node **nodeParent);
 bool isTreeEmpty(Node *root);
 bool insertNode(Node **root, Node *newNode);
+void initializeTree(Node **root);
+void destroyTreeAux(Node *root);
+void destroyTree(Node **root, Node *rootParent);
 void printInOrder(Node *root);
 void printPreOrder(Node *root);
 void printPosOrder(Node *root);
 void printPreOrderWithParentheses(Node *root);
 
 int main() {
-    Node *bst = NULL;
+    Node *bst;
+    initializeTree(&bst);
     insertNode(&bst, createNode(49));
     insertNode(&bst, createNode(28));
     insertNode(&bst, createNode(83));
@@ -47,12 +51,15 @@ int main() {
     printPreOrder(searchedNode);
     printf("\n");
     Node *nodeParent;
-    Node *newSearchedNode = searchNode(bst, 71, &nodeParent);
+    Node *newSearchedNode = searchNode(bst, 83, &nodeParent);
     printPreOrder(newSearchedNode);
     printf("\n");
     printPreOrder(nodeParent);
     printf("\n");
     printPreOrderWithParentheses(bst);
+    printf("\n");
+    destroyTree(&newSearchedNode, bst);
+    printPreOrder(bst);
     printf("\n");
     return 0;
 }
@@ -128,6 +135,31 @@ bool insertNode(Node **root, Node *newNode) {
             }
         }
     }
+}
+
+void initializeTree(Node **root) {
+    *root = NULL;
+}
+
+void destroyTreeAux(Node *root) {
+    if(!isTreeEmpty(root)) {
+        destroyTreeAux(root->left);
+        destroyTreeAux(root->right);
+        root->left = NULL;
+        root->right = NULL;
+        free(root);
+    }
+}
+
+void destroyTree(Node **root, Node *rootParent) {
+    destroyTreeAux(*root);
+    Node *nodeParent;
+    searchNode(rootParent, (*root)->key, &nodeParent);
+    if(!isTreeEmpty(nodeParent)) {
+        if(nodeParent->left == *root) nodeParent->left = NULL;
+        else nodeParent->right = NULL;
+    }
+    *root = NULL;
 }
 
 void printInOrder(Node *root) {
