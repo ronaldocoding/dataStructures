@@ -13,6 +13,8 @@ typedef struct Node {
 Node *createNode(int newKey);
 Node *binarySearch(Node *root, int searchedKey);
 Node *searchNode(Node *root, int searchedKey, Node **nodeParent);
+Node *getGreatestNode(Node *root);
+Node *getLeastNode(Node *root);
 bool isTreeEmpty(Node *root);
 bool insertNode(Node **root, Node *newNode);
 void initializeTree(Node **root);
@@ -61,6 +63,10 @@ int main() {
     destroyTree(&newSearchedNode, bst);
     printPreOrder(bst);
     printf("\n");
+    Node *greatestNode = getGreatestNode(bst);
+    printf("%d\n", greatestNode->key);
+    Node *leastNode = getLeastNode(bst);
+    printf("%d\n", leastNode->key);
     return 0;
 }
 
@@ -108,6 +114,18 @@ Node *searchNode(Node *root, int searchedKey, Node **nodeParent) {
         }
     }
     return NULL;
+}
+
+Node *getGreatestNode(Node *root) {
+    if(isTreeEmpty(root)) return NULL;
+    if(isTreeEmpty(root->right)) return root;
+    return getGreatestNode(root->right);
+}
+
+Node *getLeastNode(Node *root) {
+    if(isTreeEmpty(root)) return NULL;
+    if(isTreeEmpty(root->left)) return root;
+    return getLeastNode(root->left);
 }
 
 bool isTreeEmpty(Node *root) {
