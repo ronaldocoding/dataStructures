@@ -12,11 +12,12 @@ typedef struct Node {
 
 Node *createNode(int newKey);
 Node *binarySearch(Node *root, int searchedKey);
-Node *searchNode(Node *root, int searchedKey, Node **nodeParent);
+Node *searchNode(Node *root, int searchedKey, Node **parentNode);
 Node *getGreatestNode(Node *root);
 Node *getLeastNode(Node *root);
 bool isTreeEmpty(Node *root);
 bool insertNode(Node **root, Node *newNode);
+bool removeNode(Node **node, int searchedKey);
 void initializeTree(Node **root);
 void destroyTreeAux(Node *root);
 void destroyTree(Node **root, Node *rootParent);
@@ -52,11 +53,11 @@ int main() {
     Node *searchedNode = binarySearch(bst, 71);
     printPreOrder(searchedNode);
     printf("\n");
-    Node *nodeParent;
-    Node *newSearchedNode = searchNode(bst, 83, &nodeParent);
+    Node *parentNode;
+    Node *newSearchedNode = searchNode(bst, 83, &parentNode);
     printPreOrder(newSearchedNode);
     printf("\n");
-    printPreOrder(nodeParent);
+    printPreOrder(parentNode);
     printf("\n");
     printPreOrderWithParentheses(bst);
     printf("\n");
@@ -67,6 +68,30 @@ int main() {
     printf("%d\n", greatestNode->key);
     Node *leastNode = getLeastNode(bst);
     printf("%d\n", leastNode->key);
+    printPreOrderWithParentheses(bst);
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+
+    Node *newBst = NULL;
+    initializeTree(&newBst);
+    insertNode(&newBst, createNode(50));
+    insertNode(&newBst, createNode(30));
+    insertNode(&newBst, createNode(90));
+    insertNode(&newBst, createNode(20));
+    insertNode(&newBst, createNode(40));
+    insertNode(&newBst, createNode(100));
+    insertNode(&newBst, createNode(95));
+    insertNode(&newBst, createNode(110));
+    printPreOrderWithParentheses(newBst);
+    printf("\n");
+    removeNode(&newBst, 20);
+    printPreOrderWithParentheses(newBst);
+    printf("\n");
+    removeNode(&newBst, 90);
+    printPreOrderWithParentheses(newBst);
+    printf("\n");
     return 0;
 }
 
@@ -94,8 +119,8 @@ Node *binarySearch(Node *root, int searchedKey) {
     }
 }
 
-Node *searchNode(Node *root, int searchedKey, Node **nodeParent) {
-    *nodeParent = NULL;
+Node *searchNode(Node *root, int searchedKey, Node **parentNode) {
+    *parentNode = NULL;
     if(isTreeEmpty(root)) {
         return NULL;
     } else {
@@ -104,7 +129,7 @@ Node *searchNode(Node *root, int searchedKey, Node **nodeParent) {
             if(currentNode->key == searchedKey) {
                 return currentNode;
             } else {
-                *nodeParent = currentNode;
+                *parentNode = currentNode;
                 if(searchedKey > currentNode->key) {
                     currentNode = currentNode->right;
                 } else {
@@ -126,6 +151,16 @@ Node *getLeastNode(Node *root) {
     if(isTreeEmpty(root)) return NULL;
     if(isTreeEmpty(root->left)) return root;
     return getLeastNode(root->left);
+}
+
+Node *greaterLeft(Node *node, Node **previous) {
+    *previous = node;
+    node = node->left;
+    while(node->right) {
+        *previous = node;
+        node = node->right;
+    }
+    return node;
 }
 
 bool isTreeEmpty(Node *root) {
@@ -155,6 +190,35 @@ bool insertNode(Node **root, Node *newNode) {
     }
 }
 
+bool removeNode(Node **root, int searchedKey) {
+    Node *current, *parentNode, *substitute, *substituteParent;
+    substitute = NULL;
+    current = searchNode(*root, searchedKey, &parentNode);
+    if(current == NULL) return false;
+    if(!current->left || !current->right) {
+        if(!current->left) substitute = current->right;
+        if(!current->right) substitute = current->left;
+        if(!parentNode) {
+            *root = substitute;
+        } else {
+            if(parentNode->key > searchedKey) parentNode->left = substitute;
+            else parentNode->right = substitute;
+        }
+        free(current);
+        return true;
+    } else {
+        substitute = greaterLeft(current, &substituteParent);
+        current->key = substitute->key;
+        if(substituteParent->left == substitute) {
+            substituteParent = substitute->left;
+        } else {
+            substituteParent->right = substitute->right;
+        }
+        free(substitute);
+        return true;
+    }
+}
+
 void initializeTree(Node **root) {
     *root = NULL;
 }
@@ -171,11 +235,11 @@ void destroyTreeAux(Node *root) {
 
 void destroyTree(Node **root, Node *rootParent) {
     destroyTreeAux(*root);
-    Node *nodeParent;
-    searchNode(rootParent, (*root)->key, &nodeParent);
-    if(!isTreeEmpty(nodeParent)) {
-        if(nodeParent->left == *root) nodeParent->left = NULL;
-        else nodeParent->right = NULL;
+    Node *parentNode;
+    searchNode(rootParent, (*root)->key, &parentNode);
+    if(!isTreeEmpty(parentNode)) {
+        if(parentNode->left == *root) parentNode->left = NULL;
+        else parentNode->right = NULL;
     }
     *root = NULL;
 }
