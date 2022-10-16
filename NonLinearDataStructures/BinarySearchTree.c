@@ -210,7 +210,7 @@ bool removeNode(Node **root, int searchedKey) {
         substitute = greaterLeft(current, &substituteParent);
         current->key = substitute->key;
         if(substituteParent->left == substitute) {
-            substituteParent = substitute->left;
+            substituteParent->left = substitute->left;
         } else {
             substituteParent->right = substitute->right;
         }
